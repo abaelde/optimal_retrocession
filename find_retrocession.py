@@ -1,15 +1,77 @@
 import numpy as np
 from scipy.optimize import minimize
-import holoviews as hv
-from holoviews import opts, dim
+from plot_helpers import plot_retrocession_matrix_graph
+import pandas as pd
+from io import StringIO
+import time
+import networkx as nx
+import matplotlib.pyplot as plt
 
-hv.extension("bokeh")
 
-# Sample data for N entities
-N = 3
-C = np.array([100, 100, 70])  # Capital values
-L = np.array([10, 10, 15])  # Loss values
+def print_status(xk):
+    print(f"Current parameter vector: {xk}")
+
+
+# Set random seeds for reproducibility
+np.random.seed(42)
+
+# Generate random data for 20 entities with seeds set
+num_entities = 20
+
+# Generate entity names
+entity_names = [f"Entity_{i+1}" for i in range(num_entities)]
+
+# Generate random capital values between 10 and 100
+capital_values = np.random.randint(10, 101, num_entities)
+
+# Generate random loss values between 10 and 30
+loss_values = np.random.randint(10, 31, num_entities)
+
+# Generate RC values as capital / random choice of 2 or 3
+rc_values = capital_values / np.random.choice([2, 3], num_entities)
+
+# Create a DataFrame
+df_generated_seed = pd.DataFrame(
+    {
+        "entity_name": entity_names,
+        "C": capital_values,
+        "L": loss_values,
+        "RC": rc_values,
+    }
+)
+
+# Convert the DataFrame to CSV format (for demonstration; in reality, you'd save it to a file)
+csv_generated_seed = df_generated_seed.to_csv(index=False)
+
+print(csv_generated_seed)
+
+
+# Create a sample CSV content
+csv_content = """
+entity_name,C,L,RC
+Entity_1,100,10,50
+Entity_2,100,20,50
+Entity_3,100,10,50
+"""
+
+csv_content = csv_generated_seed
+
+# Simulate reading from a CSV file
+df = pd.read_csv(StringIO(csv_content))
+
+# Extract vectors C, L, RC, and entity_name from the DataFrame
+C = df["C"].values
+L = df["L"].values
+RC = df["RC"].values
+entity_name = df["entity_name"].values
+
+N = len(df)
+
+"""
+C = np.array([100, 100, 100])  # Capital values
+L = np.array([10, 20, 10])  # Loss values
 RC = np.array([50, 50, 50])  # Risk capital values
+"""
 
 SR = C / RC
 print("Initial SR:", ", ".join(["{:.2f}".format(val) for val in SR]))
@@ -41,9 +103,13 @@ for i in range(N):
 R0 = np.ones(N * N) / N
 
 # Solve
+print("Start Optimization")
+t0 = time.time()
 res = minimize(objective, R0, constraints=cons)
+print(time.time() - t0)
 
 # Reshape the solution to NxN matrix
+print("plot results")
 R_optimal = res.x.reshape(N, N)
 print("\nRetrocession matrix")
 print("\nOptimal R matrix:")
@@ -69,42 +135,7 @@ print(
 # Convert the retrocession matrix to SR change matrix
 SR_changes = np.dot(R_optimal, L) / RC
 
-
-import plotly.graph_objects as go
-import plotly.express as px
-import numpy as np
-
-
-def plot_sankey(R, L):
-    labels = [f"Entity {i+1}" for i in range(N)] * 2
-    source = []
-    target = []
-    value = []
-
-    for i in range(N):
-        for j in range(N):
-            source.append(i)
-            target.append(j + N)  # Shifted by N to represent the target entities
-            value.append(R[i][j] * L[i] + 0.001)
-
-    fig = go.Figure(
-        data=[
-            go.Sankey(
-                node=dict(
-                    pad=15,
-                    thickness=20,
-                    line=dict(color="black", width=0.5),
-                    label=labels,
-                ),
-                link=dict(source=source, target=target, value=value),
-            )
-        ]
-    )
-
-    fig.update_layout(
-        title_text="Distribution of Losses between Entities", font_size=10
-    )
-    fig.show()
-
-
-plot_sankey(R_optimal, L)
+# plot ------------------------------
+print("plot ")
+plot_retrocession_matrix_graph(R_optimal)
+# plot_sankey(R_optimal, L)

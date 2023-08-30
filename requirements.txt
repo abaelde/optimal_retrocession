@@ -1,0 +1,8 @@
+numpy
+scipy
+
+# plotting
+plotly
+networkx
+matplotlib
+pyvis
