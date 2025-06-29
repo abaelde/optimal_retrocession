@@ -105,3 +105,4 @@ venv.bak/
 \n# Dossier pour les resultats des scripts\nresults/
 \n# Environnement virtuel uv\n.venv/
 \n# Direnv cache\n.direnv/
+\n# macOS system files\n.DS_Store
