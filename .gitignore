@@ -102,7 +102,13 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-\n# Dossier pour les resultats des scripts\nresults/
-\n# Environnement virtuel uv\n.venv/
-\n# Direnv cache\n.direnv/
-\n# macOS system files\n.DS_Store
+# Dossier pour les resultats des scripts
+results/
+# Environnement virtuel uv
+.venv/
+# Direnv cache
+.direnv/
+# macOS system files
+.DS_Store
+# Generated LaTeX PDF
+memoire/main.pdf

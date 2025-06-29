@@ -1,3 +1,5 @@
+Ce projet a pour objectif la rédaction d'un mémoire d'Actuariat en LaTeX. Le mémoire est structuré en plusieurs petits fichiers LaTeX pour faciliter la gestion de la structure. Des scripts Python sont également inclus pour générer les figures utilisées dans le mémoire.
+
 # Project Rules and Decisions
 
 This document outlines the key decisions and conventions adopted for the `optimal_retrocession` project. Adhering to these rules ensures consistency, maintainability, and efficient collaboration.
@@ -26,4 +28,3 @@ This document outlines the key decisions and conventions adopted for the `optima
     *   **Output**: `memoire_complet.md` at the project root.
     *   **Purpose**: To generate a single, comprehensive Markdown file of the dissertation content, primarily for LLM analysis.
 *   **`make pdf` Target (Future)**: A target for compiling the LaTeX document into a PDF will be added to the `Makefile` once the LaTeX compilation process is confirmed to be functional.
-
