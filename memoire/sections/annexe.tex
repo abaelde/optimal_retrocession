@@ -1,0 +1,134 @@
+\chapter{Appendix}
+\label{sec:APPENDIX}
+
+
+\section{Definitions}
+
+PML : Probable Maximum Loss
+equity investment, shareholder's equity
+Legal entity et branch
+Shareholder’s Equity: Computed from the GAAP Balance Sheet
+Gross loss : loss before any use of retrocession
+Net loss : loss after use of external retrocession
+Internal net loss : loss after us of external and internal retrocession
+
+
+\section{Group Structure, Financial Information and regulatory requirements - a re-regarder}
+
+To define clear naming conventions, lets call the Artificial Reinsurance company the ARC Group. This Group is made of a mother company incorporated in Bermuda, called ARCG, and of several subsidiaries listed below :
+
+
+\begin{itemize}
+\item ARCBM : subsidiary incorporated in Bermuda
+\item ARCUS : subsidiary incorporated in the USA
+\item ARCSE : subsidiary incorporated in Europe
+\item ARCA : subsidiary incorporated in Singapore
+\end{itemize}
+
+These subsidiaries are fully owned by ARCG (ask about the status of PartnerRe Ltd, is it a holding ?, what are the relations with PRCL?). These companies are not branches of ARCG, each of them is a single stand alone company owned by ARCG.
+
+
+
+
+
+\section{Balance sheet representation}
+\label{sec:BSR}
+Each company part of ARC Group reports financial statements. The structure of their balance sheet is presented below.
+
+
+
+
+
+\section{NAIC Risk Based Capital (RBC)}
+\label{sec:NAIC_RBC_PRESENTATION}
+
+The NAIC (National Association of Insurance Commissioners) is the US standard setting organization operating on US soil. The NAIC is not a regulatory agency but it authors and is responsible of the required capital formula provided blow. The NAIC required capital (Risk Based Capital or RBC) formula is similar to the BMA one, taking the risks detailed in table \ref{t:RISK_LIST} into account and using the following diversification formula :
+
+\begin{equation}
+	RBC = \sqrt{C_{fi}^2 + C_{eq}^2 + C_{cred}^2 + C_{rsrv} )^2 + C_{prem}^2 + C_{cat}^2} + C_{subsidiary}
+\end{equation}
+
+The NAIC adds a subsidiary risk to the risks presented in table \ref{t:RISK_LIST}. This subsidiary risk is the required capital for holding participation in (re)insurance companies, and this capital charge is computed by the RBC formula applied on the subsidiary. 
+
+\subsection{Credit Risk}
+
+The additional credit risk sub-capital $\Delta C_{cred}$ is computed by multiplying half the additional recoverables $\Delta Recov$ by a factor $F_{cred}$ equals to 10\%. 
+
+\begin{equation}
+	\Delta C_{cred} = \frac{1}{2}\Delta Recov \; \times F_{cred} = \Delta Recov \times 5\%
+\end{equation}
+
+with $\Delta Recov$ the additional recoverables and $F_{cred}$ the credit risk factor.
+
+
+\subsection{Reserve risk}
+
+The additional reserve risk sub-capital $\Delta C_{rsrv}$ is computed by multiplying the additional reserves $\Delta Res$ by a concentration factor $F_{con}$ and an adjustment factor $F_{adj}$ :
+
+\begin{equation}
+	\Delta C_{rsrv} = \Delta Res \times F_{adj} \times F_{con}
+\end{equation}
+
+The concentration factor value is $0.815$. The adjustment factor is computed through a complex formula that can be found in the NAIC reference document REF NAIC DOC. For simplicity this factor will be set to 1 on the following studies.
+
+
+
+\begin{table}
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+   \textbf{Risk Name and Abbreviation} & \textbf{BMA} & \textbf{NAIC} & \textbf{Risk Driver} \\ \hline \hline
+   Fixed income (fi) & x & x & Volume of Fixed Income instrument\\ \hline
+   Equity (eq) & x & x & Volume of Equity \\ \hline
+   Interest rate (intrate) & x & 0 & \\ \hline
+   Currency (cur) & x & 0 & \\ \hline
+   Concentration (conc) & x & 0 & \\ \hline
+   Premium (prem) & x & x & Volume of Premium \\ \hline
+   Reserve (rsrv) & x & x &  Volume of Non-Life Reserves \\ \hline
+   Credit / Counterparty (cred) & x & x & Volume of recoverables\\ \hline
+   Catastrophe (cat) & x & x & Probable Maximum Loss\\ \hline
+   Life & x & 0 & Volume of Life Reserves\\ \hline
+   \label{t:RISK_LIST}
+\end{tabular}
+   \caption{List of risk and risk drivers for several solvency capital requirement.}
+\end{table}
+
+
+
+
+\section{Rating Agency capital requirement : S\&P Risk based Insurance Capital Model}
+
+In order to operate on the reinsurance market, a company must prove to its customers that it is solvent and will be able to pay its reinsurance liabilities. But a good return on equity must be provided to shareholders to convince them in invest in the company rather than in another. Contrary to regulators, whose aim is principally the defense of customers, Rating Agencies rates insurance companies with their proprietary risk based capital model. The rating Agency point of view is balanced, as solvency cannot be separated from profitability. 
+The rate applied to an insurance company is very important because it represents an external view on the company economic situation thaty is accessible to customers.
+Several elements of the company are taken into account to compute the rate. One of these elements is the strength of the capital, which is assigned a specific rate computed with a risk based capital model. Other elements play a role in the computation of the final rate, such as ownership of the company or the management team. 
+
+Insurance companies are generally rated by several rating agencies, whose several examples are given below :
+
+\begin{itemize}
+\itemsep0em 
+\item Standard \& Poor's (S\&P)
+\item Moody's
+\item Fitch
+\item AM Best
+\end{itemize}
+
+In this work, only the S\&P risk based insurance capital model will be used.
+
+In their view, the shareholder's equity of the company is retreated to get rid of XXXXXXX and YYYYYY. This lead to the Total Available Capital (TAC), which is the S\&P view of the company wealth. In front of this TAC, several Target Capitals are computed using a factor based deterministic formula, using balance sheet elements as an input. For each rate AAA, AA, A and BBB, a Target Capital is computed; Obviously, the values of these Target Capitals is decreasing from AAA to BBB. A AAA company has a very strong TAC in regards of its risk profile. This is not the case of a BBB company. To be granted a certain rate, the TAC must be above the Target Capital associated to this rate.
+
+
+
+
+
+\section{Practical implementation on NAIC RBC}
+
+
+The diversification function of the NAIC RBC is :
+
+\begin{equation}
+	RBC = \sqrt{C_{fi}^2 + C_{eq}^2 + C_{cred}^2 + C_{rsrv} )^2 + C_{prem}^2 + C_{cat}^2} + C_{subsidiary}
+\end{equation}
+
+
+The linear approximation of this function is :
+

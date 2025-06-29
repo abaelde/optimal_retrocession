@@ -1,0 +1,217 @@
+\section{How to shock the regulatory required capital ?}
+\label{sec:SHOCK_RC}
+
+The following list presents and describe the risks components of risk factor based capital requirements we propose to consider:
+
+\begin{itemize}
+\itemsep0em 
+\item Reserve risk: The reserve risk depends on the amount of provision.
+\item Credit risk: Retrocession recoverable are increased as retrocessions are activated by a loss. The amount of recoverables is used in the credit risk module
+ \item Fixed income investment risk : a loss of value of fixed income instruments 
+ \item Equity and other investments : a loss of value of equity 
+\end{itemize}
+
+
+Most risk drivers presented in \ref{t:RISK_LIST} are elements of the balance sheet. The representation of the balance sheet presented in section \ref{sec:BSR} is, according to us, at the right granularity to capture most of the risks involved in solvency capital model but still simple enough to allow easy interpretation and readability.
+
+A general introduction on the computation of regulatory required capital was given in section \ref{sec:RRC_PRINCIPLE}. This section explains how to shock such regulatory required capital during a scenario stress test. 
+
+
+A general method to compute the regulatory required capital is presented. 
+
+Linear approximations allowing quick computation of regulatory required capital are presented. 
+
+We think that this approach is of interest for companies wanting to perform quick updates of their solvency ratio anytime during a year, while complete computations are generally done on a yearly or quarterly basis. Practical implementations are presented for the BMA BSCR.
+
+\subsection{Shocking a regulatory capital requirement - Exact formulation}
+
+Following the introduction on regulatory required capital computation presented in section \ref{sec:RRC_PRINCIPLE}, one interesting aspect of scenarios is to apply shock on the regulatory capital computation. Before the shock, the required capital will be denoted $RC$ and after the shock $RC^U$ (U standing for Updated).
+
+After the shock, final risk drivers $RD_i^U$ are modified but some (final) risk factors $F_i^U$ can also be modified. Although not common, we will keep this dependence the the sake of generality.
+
+These two required capitals can be written as :
+
+\begin{equation}
+	RC = f^{\beta}(RD_1 \times F_1,... , RD_i \times F_i, RD_N \times F_N)
+\end{equation}
+
+and
+
+\begin{equation}
+	RC^U = f^{\beta}(RD_1^U \times F_1^U,... , RD_i^U \times F_i^U, RD_N^U \times F_N^U)
+\end{equation}
+
+The difference in required capital after and before the shock is simply :
+
+\begin{equation}
+	\Delta RC = RC^U - RC
+\end{equation}
+
+For numerical computation, this formulation is accurate, exact and usable. 
+
+
+\subsection{Shocking a regulatory capital requirement - Approximate formulation}
+
+
+But to understand the dynamics of the modification of the required capital during the shock, an approximate expression is desirable. Considering that even large losses will lead to relatively small sub-capital variations compared to the overall required capital, the diversification function \ref{eq:DIVERSIFICATION} can be simplified using its Taylor expansion as :
+
+TODO : JUSTIFY THIS ASSUMPTION
+
+\begin{equation}
+	RC^U = RC + \frac{1}{RC} \sum_{i,j=1}^{N} \beta_{i,j} \left[ C_i \Delta C_j+ C_j \Delta C_i \right]
+\end{equation}
+
+with $\Delta C_i = RD_i^U \times F_i^U - RD_i \times F_i$ the variation of risk $i$ sub-capital.
+
+Finally, the required capital variation is :
+
+\begin{equation}
+	\Delta RC = \frac{1}{RC} \sum_{i,j=1}^{N} \beta_{i,j} \left[ C_i \Delta C_j+ C_j \Delta C_i \right]
+\end{equation}
+
+
+In order to simplify the calculations, the cross-correlation terms $\beta_{i,j}$ where $i \neq j$ will be set to 0. The BMA BSCR contains some cross correlation terms but only concerning Life risks. As there risk are not be considered in the following calculation, there terms are neglected. Full expressions could be used in the case of numerical development of these relations.
+
+
+\subsection{Linear approximation of BMA BSCR}
+
+The diversification function of the BMA BSCR is :
+
+\begin{multline}
+	BSCR = \sqrt{C_{fi}^2 + C_{eq}^2 + C_{cur}^2 + C_{conc}^2 + C_{intrate}^2 + C_{prem}^2 + (1/2 C_{cred} + C_{rsrv} )^2 } \\ \overline{  + (1/2 C_{cred})^2 + C_{cat}^2 + C_{life}^2 } + C_{op} + C_{adj}
+\end{multline}
+
+The linear approximation of this function is :
+
+TODO : COMPUTE LINEAR APROXIMATION
+
+
+
+\subsection{Case study - Evolution of Required Capital in function of the use of external retrocession}
+\label{sec:RC_SINGLE}
+
+In this part, the reinsurance group consist in a single company, incorporated in a country imposing the computation of a required capital through the use of a risk factor based formula.
+
+This company hold a certain amount of capital and report a certain amount of required capital. We assume this company will experience a determined, certain loss of L millions \$.
+
+This company have to choices to mitigate this loss L. The first option is to bear the entire risk and pay the L millions. For this, this company needs to hold enough funds and this loss will directly translate into a loss of value of the equity of the shareholders. This will considered as the base case.
+Another possibility is to buy external (to the group) retrocession to another reinsurer, which will reduce the loss but also the profitability of the company. 
+In real life, a company never knows when it will be impacted by a loss, otherwise it will buy retrocession to cover its loss and just pay a "small" premium compared to the loss.
+
+What happen from a required capital point of view. The first option translate in an increase of reserves before the claims are paid, which result in an increase of required capital for reserve risk.
+In the second option, as a part of the loss is transfered to the retrocessionaire, the reserve risk increases less. But this retrocessionaire may not pays it's share of the loss, which results in an increase of credit risk.
+
+Which option is the best for the group ?
+
+In the option 1, the additional reserves is L, the loss amount. The required sub-capital for reserve risk is then $L \times F^R$. 
+
+The shocked required capital is :
+
+\begin{equation}
+	RC^U_1 = RC + \frac{C_{reserve}}{RC} L \times F^R
+\end{equation}
+
+The subscript $1$ means "option 1".
+
+In option 2, a share $\alpha$ of the loss if sent to an external retrocession and a share $(1-\alpha)$ is kept in the group. The reserve risk sub-capital variation is then $(1-\alpha) L \times F_{reserve}$. The retrocessionaire must pay $\alpha L$ to the group, creating a counterparty risk of $\alpha L \times F_{counterparty}$.  
+
+The shocked required capital is :
+
+\begin{equation}
+	RC^U_2 = RC + \frac{C_{reserve}}{RC} (1-\alpha) L \times F^R + \frac{C_{counterparty}}{RC} \alpha L \times F^C
+\end{equation}
+
+If no risk is ceded, corresponding to $\alpha = 0$, then $RC^U_1 = RC^U_2$.
+
+
+The variation of required capital associated to the transfer of risk is computed as :
+
+
+\begin{equation}
+	RC^U_2 - RC^U_1 = \frac{\alpha L}{RC} (SC_{counterparty} F_{counterparty} - SC_{reserve} F_{reserve})
+\end{equation}
+
+The amplitude of this variation is proportional with the share of risk ceded $\alpha$, but its sign depend only of the current risk profile of the company (its sub-capitals) and the regulatory environment (risk factors).
+
+To reduce the capital requirement, this variation needs to be negative, which is the case if the following relation is met :
+
+\begin{equation}
+	\frac{SC_{counterparty}}{SC_{reserve}} \leq \frac{F_{reserve}}{F_{counterparty}}
+\end{equation}
+
+The interpretation of this relation is simple : a company can reduce its required capital by the use of external retrocession only if its current counterparty risk sub-capital over reserve risk sub-capital ratio is below a certain level imposed by the regulator formula. From  a pure regulatory required capital point of view, the less counterparty risk a company has, the more interesting it is to transfer its risks.
+
+\subsubsection{BMA BSCR reserve risk}
+
+Contrary to the expression given before, the BMA BSCR computation uses a different definition of reserve risk and counterparty risk.
+
+Considering the classic definition of counterparty risk sub-capital $C^{C}$ and reserve risk sub-capital $C^{R}$, two derived sub-capitals are defined as :
+
+$$
+\left\{
+    \begin{array}{ll}
+        C_{cred,resv} = \frac{1}{2} C^{C} + C^{R}\\
+        C_{cred} = \frac{1}{2} C^{C}
+    \end{array}
+\right.
+$$
+
+A similar calculation to the previous one leads to the following condition of required capital with the use of retrocession :
+
+\begin{equation}
+\label{eq:BSCR_1_condition}
+	\frac{C^C + C^R}{C^C + 2C^R} \leq \frac{F^R}{F^C}
+\end{equation}
+
+In the definition of the BMA BSCR, the relation $F^R \geq F^C$ is always verified. This means that equation \ref{eq:BSCR_1_condition} is always true : purchasing external retrocession will always reduce the BSCR.
+
+
+TODO : VERIFY CALCULATIONS
+
+
+\subsection{Case study : Effect of internal retrocession on required capital for a dual entity group}
+\label{sec:RC_DOUBLE}
+
+FIGURE 2 entities
+
+In that case, the Group is composed of two independent entities, incorporated in the same country and using the same currency. At group level, the options in the case of a loss are the same than in section \ref{sec:RC_SINGLE} : pay the loss or buy retrocession before.
+
+At a legal entity level, another option is possible : transferring the risk from one entity to another.
+What are the effect of such transfer at group and legal entity level ?
+
+The effect is first studied at legal entity level and the group effect is derived from the sum of the effects on legal entities.
+
+The two entities are called 1 and 2. Entity 1 bears a loss $L^1$ and entity 2 a loss $L^2$. We assume that 2 transfer a share $\alpha$ of its risk to 1. 
+
+The variations of required capital of both entities are :
+
+$$
+\left\{
+    \begin{array}{ll}
+        \Delta RC^1 : \frac{SC^{R,1}}{RC^1} L^1 F_{reserve} + \frac{SC^{R,1}}{RC^1} \alpha L^2 F_{reserve}  \\
+        \Delta RC^2 : \frac{SC^{R,2}}{RC^2}(1-\alpha)L^2 F_{reserve} + \frac{SC^{C,2}}{RC^2}\alpha L^2 F_{counterparty} 
+    \end{array}
+\right.
+$$
+
+The group required capital level is :
+
+\begin{multline}
+	\Delta RC^1 + \Delta RC^2 = \alpha L^2 \left[ \frac{SC^{R,1}}{RC^1} F_{R} + \left(\frac{SC^{C,2}}{RC^2} F_{C} - \frac{SC^{R,2}}{RC^2} F_{R} \right) \right] \\+  \left( \frac{SC^{R,1}}{RC^1} L^1 F_{R} + \frac{SC^{R,2}}{RC^2} L^2 F_{R} \right)
+\end{multline}
+
+Results are similar to the case of one entity. Increasing the ceded share of risk $\alpha$ can decrease the overall required capital if and only if $L^2 \left[ \frac{SC^{R,1}}{RC^1} F_{R} + \left(\frac{SC^{C,2}}{RC^2} F_{C} - \frac{SC^{R,2}}{RC^2} F_{R} \right) \right]$ is negative. For this, entity 1 must have low current reserves and entity 1 low current counterparty risk and high current reserve risk. 
+One conclusion we can draw is that to reduce its required capital requirement, a company should consider modifying its current risk profile toward a more balanced one. If a company has a very biased risk profile, introducing internal retrocession can both increase or decrease its required capital.
+
+
+But it can be beneficial to increase the group required capital if it allows to highly reduce the required capital a small entity. Such result can be desirable for a newly created subsidiary whose priority is growth.
+Taking the example of entity 2, introducing his internal retrocession allow to replace a share $\alpha$ of the reserve risk $\frac{SC^{R,2}}{RC^2}\alpha L^2 F_{reserve}$ with a counterparty risk $\frac{SC^{C,2}}{RC^2}\alpha L^2 F_{counterparty}$. Assuming that $SC^{R,2} F_R$ is greater than $SC^{C,2} F_C$, the entity 2 required capital is reduced.
+
+\subsection{Perspectives}
+
+Case of different regulatory environment
+
+In that case, risk factors and diversification weights are modified.
+
+Interesting case to consider further.
+

@@ -1,0 +1,161 @@
+\section{How to shock the balance sheet items ?}
+\label{sec:SHOCK_BS}
+
+Previous sections presented the components of the model representing the insurance company and several risk transfer mechanisms. This section present how to shock these components to assess the effect of an event on the company's financial structure.
+
+The core principle of stress testing is to apply a shock on the (re)insurance company and assess the impact on its structure. This impact can be assessed on at least two aspects that are studied after : the financial structure, represented by the financial statements, and its required capital. A bottom-up approach was chosen : shocks are applied on each legal entity, whose consequences can be summed to give the impact at group level.
+
+
+\subsection{Different kind of shocks and modeling}
+
+Depending on the designed scenario, shocks can be of different types and any mix of them is a priori relevant. Most shocks fall into the following categories:
+
+
+\begin{itemize}
+    \item Loss related to an insurance claim
+    \item Invested Asset price variation
+    \item Underlying distribution modification
+\end{itemize}
+
+Shocks related to change in the underlying distribution will not be considered in this report. Shocks related to losses and assets price variation are summarized by the ensemble of vectors defined by equation \ref{eq:SHOCK_DEF}:
+
+
+\begin{equation}
+\label{eq:SHOCK_DEF}
+    S = \left\{L^U ; Recov = L^U - L ; \Delta B ; \Delta E_q, \Delta E_r \right\}
+\end{equation}
+
+
+with $L^U$ the loss vector after internal retrocession, $L$ the loss vector before internal retrocession, $Recov$ is the recoverable vector defined as the difference in losses before and after use of the internal retrocession,
+
+assumption, the internal credit risk is the same within the group. Simplification to make calculation easier, can be improved later.
+
+
+$B$ Bond vector, $\Delta E_q$ the equity vector containing the variation of equity in percentage, 
+
+
+
+$E_r$ external retrocession vector. The vector depend on the scenario granularity. Here we keep a simplified view.
+
+
+\subsection{Shocked elements on the balance sheet}
+
+Our model is a simplification of reality, therefore, only the following assets are shocked. More items could be added in later developments. The balance sheet's shocked items in Assets are :
+
+\begin{itemize}
+\itemsep0em 
+\item Investments : assets invested in different kind of securities :
+\begin{itemize}
+\item Fixed income (Bonds, Mortgage Backed Securities, etc)
+\item Equity (stocks of public listed companies) + Alternative investments (real estate, private equity, etc)
+\end{itemize}
+\item Recoverable : amount of reinsurance retrocession owed to the company by its retrocessionaires.
+\end{itemize}
+
+Shocked items in Liabilities are :
+\begin{itemize}
+\itemsep0em 
+\item Non-Life Provisions : reserves associated to Non-Life liabilities.
+\end{itemize}
+
+TODO : EXPLAIN RELATIONS IN BALANCE SHEET
+
+The updated capital vector is denoted $C^U$ and computed as:
+
+\begin{equation}
+    C^U = FI^U + E^U + Recov^U + OA^U - Res^U
+\end{equation}
+
+Next sections explains how the components are modified by the application of shocks of several natures.
+
+
+\subsection{Effect of a loss on the balance sheet}
+
+The Reserves of a company are its views at a given time of its future liabilities. Methods used to compute reserves are prospective and based on actuarial principles. Just after an event leading to a loss, the existence of a liability become certain but not its amount. As claims are received by the company the final amount of the loss become more and more accurate. In the context of stress testing, the scenario is considered all-knowing and the final loss amount of known immediately after the event. In this vision, the reserves must be increased of the gross loss amount. 
+
+
+\subsubsection{Increase of Reserves by the gross loss}
+
+When a loss occurs, the amount of reserves of the legal entity increases to account for these new liabilities to pay. The reserve vector is updated by the loss as:
+
+\begin{equation}
+    Res^U = Res + L
+\end{equation}
+
+Why adding the gross loss and not the net loss ? 
+
+The net loss is the loss that is ultimately bore by the company. It is the gross loss minus the recoverables (paid by other reinsurers). As recoverables are taken into account in the Asset side of the balance sheet, the gross loss must be added to the Liability side. In that way, the own fund variation is equal to the net loss if all recoverables are actually recovered.
+
+
+\subsubsection{Use of External retrocession and increase of recoverables}
+
+When a (re)company bears a loss and has not purchased any retrocession, the loss is totally impacted on the company and its reserves are increased at the level of the loss. If it purchased some retrocession, its retrocessionaires will pay their share of the loss. As this payment is not instantaneous, the reinsurance recoverable item is increased of the amount of retrocession that is payable to the company. When this payment is made, the recoverable item is converted into cash in the balance sheet.
+Reinsurance recoverables can be considered as receivables, but the likelihood of payment is less than receivables as the retrocessionaires might default. Moreover, receivables can be of numerous types (premiums, etc), whereas reinsurance recoverables only relate to reinsurance sums.
+
+For example, if the company bears a \$ 50 M loss and its retrocession agreement states that 50\% of this sum is payed by retrocessionaires, than the recoverable item in the balance sheet is increased of \$ 50 M $\times$ 50 \% = \$ 25 M.
+
+
+The following section present the impact of shocks on Assets and Liabilities. The Asset item shocked are investments and Recoverables. The liability item shocked are Non Life and Life Reserves.
+
+
+\begin{align}
+    Recov^U &= Recov + (L - L^0) + (L^U - L) \\
+            &= Recov + external_retro + internal_retro
+\end{align}
+
+
+TODO : CASE OF INTERNAL RETOCESSION
+
+
+
+\subsection{Shocking Fixed Income Investments (Bonds)}
+Source wikipedia and investopedia
+
+Taylor development at order 2
+
+\begin{equation}
+	P(r) = P(r_0) + P'(r_0)(r - r_0) + \frac{P^{(2)}(r_0)}{2}(r - r_0)^2 + R_n
+\end{equation}
+
+Variational expression :
+\begin{equation}
+	dP(r) = P'(r) dr + \frac{P^{(2)}(r)}{2} d r^2
+\end{equation}
+
+Using the classical definition of modified duration $S$ and convexity $C$ :
+
+\begin{equation}
+	S = - \frac{ P'(r)}{ P(r)}
+\end{equation}
+
+\begin{equation}
+	C = \frac{ P^{(2)}(r)}{ P(r)}
+\end{equation}
+
+The quantities $S$ and $C$ are computed by external providers.
+
+\begin{equation}
+	dP(r) = P(r) \left[ -S dr + \frac{C}{2} d r^2 \right] + R_n
+\end{equation}
+
+In practice, the remainder is neglected and the formula applied on finite rate variation :
+
+\begin{equation}
+	 \Delta P(r) = P(r) \left[ -S \Delta r + \frac{C}{2} (\Delta r)^2 \right]
+\end{equation}
+
+
+EXPRESSION AVEC LE VECTEUR DE SHOCK
+
+
+
+\subsection{Shocking Equity}
+\label{sec:EQ_SHOCK}
+
+The Equity item on the balance sheet is the market value of the stocks held by the company. A first and simple approach consist in modifying the stocks market value by a given percentage defined in the scenario specification. For example, let's assume that a financial crisis leads to a decreases of -10\% of CAC40 stocks value, then the market value of the stock held by the company is also decreased of -10\%. Detailed calculations can be done considering that each company stock have a unique behavior. For example, in case of a pandemic, it is likely that stock price of airlines will decreases, and that the stock price of pharmaceutical companies will increase. The overall impact of such shock on the company equity investment must be computed considering the weight of each industry (even companies) has on the investment portfolio.
+
+In practice, the updated equity component is computed as :
+
+\begin{equation}
+    E^U = E \times \Delta E_q
+\end{equation}

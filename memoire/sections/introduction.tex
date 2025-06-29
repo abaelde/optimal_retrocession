@@ -1,0 +1,80 @@
+\chapter{Introduction}
+
+\section{Introduction}
+
+FONGIBILITE ET DEPLACEMENT DE CAPITAL
+
+Capital is the raw material and one of the main resource of a (re)insurance company. Capital is provided by shareholders to allow the company to underwrite risks and pay claims. The more capital a company owns, the more risk it can underwrite, and therefore grow its business as long as premiums paid by customers stay higher than the amount of claims paid.
+Knowing how and where to allocate this capital is a difficult task for any (re)insurance company and each of them have a unique way to do this allocation. Allocation can be done on several dimensions, including geographic or business lines.
+This multidimensional allocation is constrained by at least three forces whose inter-relations are complex and often opposites \cite{Rousseau2017}:
+
+\begin{itemize}
+\itemsep0em 
+\item Solvency
+\item Profitability
+\item Growth
+\end{itemize}
+
+A simplified explanation of the interactions of these three forces is the following. 
+
+Investors and shareholders want the best return on their capital, and therefore, want to invest as low as possible of it in a given company. On the other hand, regulators wants to protect policyholders, imposing to companies certain levels of minimum capital, generally called "risk based capital" or "solvency capital requirement". To sustain growth, capital should be allocated to the most profitable regions and business lines.
+
+Unlike insurance companies which generally operates on a national level and on few business lines (except global insurer like AXA or Allianz), reinsurers are international and diversified by nature. They mitigate the risk of peak losses by diversifying their exposure on numerous geographic locations and business lines, ensuring minimum correlation in their portfolio. Due to their international nature, reinsurers are often formed of several legal entities, incorporated in countries in which the reinsurance market is dynamic, historic or both.
+
+
+\section{Capital Fungibility}
+
+Therefore, Capital should be allocated to the different legal entities of the re-insurance group in a way that both sustain growth and ensure a strong solvency. However, even moving capital from one legal entity to another is not straightforward. For instance, let consider a group formed of one entity incorporated in Europe with much of the capital, and a small entity incorporated in japan with significantly less capital but enough to meet regulatory requirements. From a group perspective, the solvency margin can be high. But if an extreme event happen in Japan, such as a strong earthquake, the Japanese entity could be strongly impacted and its losses could drive its capital below the minimum required capital, therefore triggering investigations or takeover from the local regulator. In this case, the solvency of the group doesn't prevent local accidents, and it is desirable to be able to transfer funds from the large European entity to the endangered Japanese one. But this fund transfer is not straightforward. Stated differently, Capital within an insurance group is not a highly \textbf{fungible} resource: having enough capital at group level doesn't ensure each legal entity can \textbf{access} this capital.
+
+Two mechanisms can be used to transfer funds within a re-insurance group: moving capital and transferring losses from one legal entity to another. While moving capital is difficult and costly to put in practice (legal constrains, etc), transferring losses can be achieved by the use of insurance contracts, something that re-insurance companies are quite good at using. When used within the same re-insurance group, such insurance contracts are called "Internal Retrocession" and are a tool allowing to increase the fungibility of the whole group capital. 
+
+Even if Capital can be transfered from one entity to another, it should be allocated in the best way before any significant loss happen. 
+
+\section{Capital Allocation : Internal Models versus Stress Tests}
+
+Capital allocation between business line or geographic allocation is a difficult task due to the numerous parameters playing to take into account such as :
+
+\begin{itemize}
+\itemsep0em 
+\item Currency
+\item Taxes
+\item Risk exposure
+\item Regulations
+\item Cash needs
+\item dynamism
+\item reinsurance cycle
+\end{itemize}
+
+To succeed in this allocation, reinsurance companies management teams can use several tools.
+
+\subsection{Internal Models}
+
+One of them is the internal capital model. It generally consists in a stochastic simulator providing losses probability distributions. Such tool is very useful, but cannot properly treat the case of extreme events. In facts, these models are calibrated on historic or simulated data, which implies the availability of large databases to properly estimate the risks distributions.
+
+REF INNEFICACITE INTENAL MODLE SUR LES RISQUES EXTREMES
+
+
+\subsection{Scenario Stress Testing : Estimation of extreme events impacts}
+
+On the other hand, stress testing and scenarios have proved useful to study extreme events on which reliable probability estimates are not available REF ???. It consists in assuming the variation of a collection of variables, determined through a relevant scenario design, and study the impact of such variation on the company financial structure. Contrary to the stochastic nature of the internal capital model, a scenario is deterministic : it represents a single point on the loss distribution. The art of scenario design is to find the right balance between the extremeness of the scenario  and its plausibility. A weak scenario would not add value compared to a standard result of an internal capital model, and on the contrary, a too strong scenario would just destroy the entire reinsurance industry and provide no insight on the company risk profile (the meteor fall scenario wiping out the human race is useless for re-insurers).
+
+\smallbreak
+\textbf{Why using scenarios to assess a company resiliency after an extreme event?}
+\smallbreak
+
+In soft market conditions (low prices and a lot of capacity available on the financial markets), the reinsurance business is highly competitive. Only the occurrence of catastrophic losses can trigger an increase in price : a lot of capacity will be used to pay claims, leading to a shortage of capacity supply on the market. Moreover, cedents will probably want to buy additional cover as the impact of catastrophic losses is not a remote event anymore, but a yesterday reality. This increase in demand and shortage of supply generally lead to an increase in prices. But for a reinsurer to take advantage of such interesting market conditions, it needs :
+
+\begin{itemize}
+\item First, to still have enough capital to operate after the catastrophic event (which is not an impossible event, like SCOR after the World Trade center terrorist attack \cite{Brug2006}).
+\item Second, to be able to convince investors to inject capital in the company to very quickly underwrite risk and beat its competitors.
+\item Third, to be perceived as a solvent and stable business partner by cedents.
+\end{itemize}
+
+Scenarios are very useful tools to assess the state of a (re)insurance company after catastrophic events, and then examine and study its resiliency and its ability to make business after these extreme cases.
+
+
+\section{Report plan}
+
+Two studies are presented in this work. First we propose a way to model the loss "spreading" in a reinsurance company financial structure on which an arbitrary stress test scenario is applied. This correspond to a "direct problem", on which an input (scenario and losses) is applied to a specified "system" (group financial structure and retrocession agreements) from which the output (updated Capitals and capital requirement after losses) are computed for analysis. Financial structures consist in financial information of each legal entities and of the regulatory capital requirement of the country the legal entity is registered in. An interesting aspect of this work is the fact that the impact of a scenario is taken into account in the legal entity balance sheet but also in the computation of the regulatory capital requirement, leading to better solvency estimations. Several levels of approximation are used and their limitations are discussed.
+
+Second, we propose a method for determining the optimal internal retrocession of a reinsurance group, considering a given scenario. The internal retrocession program is considered as optimal if it minimizes the decrease of solvency ratio of all entities of the group. This correspond to a different kind of problem", where inputs (scenario, losses, group financial structure) are known but the system parameters (retrocession agreement) needs to be computed according to an optimization criteria, here one related to solvency. The final aim is study is to be able to define "on-demand" retrocession agreements at group level allowing to optimize Capital Allocation on a per scenario basis.

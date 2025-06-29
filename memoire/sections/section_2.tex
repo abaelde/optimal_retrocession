@@ -1,0 +1,107 @@
+\chapter{Inverse problem : How to compute the retrocession agreements to optimize the reinsurance group solvability ?}
+
+
+\import{sections/section2/}{state_art.tex}
+
+\import{sections/section2/}{problem_statement.tex}
+
+
+
+------------------------------------
+
+
+The aim of the inverse problem is to determine a set of parameters of the $R$ matrix (the internal retrocession structure) allowing to maximize the "health" of the insurance group. This optimization is done knowing the losses amounts and entities capitals and required capitals.
+
+If the loss function is the sum of all entities capital, then the formulation is use less as it doesn't depend on the  matrix
+
+
+\begin{equation}
+    SR^U = \frac{C^U}{RC^U} = \frac{C - L^U}{RC^U} = \frac{C - T[L]}{RC^I + \Delta RC[L^U]}
+\end{equation}
+
+
+
+Case where the loss function is the sum of solvency ratios
+
+assumption, required capital is not shocked
+
+\begin{equation}
+    L = SR_1 + SR_2 = SR_1^I + SR_2^I - \frac{L_1^U}{RC_1^0} - \frac{L_2^U}{RC_2^0}
+\end{equation}
+
+The aim is to minimize the following quantity
+
+\begin{equation}
+    L = \frac{L_1(1-\alpha_{2 \gets 1}) + L_2 \alpha_{1 \gets 2}}{RC_1} + \frac{L_1 \alpha_{2 \gets 1} + L_2(1-\alpha_{1 \gets 2})}{RC_2}
+\end{equation}
+
+\[
+\systeme*{ \frac{\partial L}{ \partial \alpha_{1 \gets 2}} = L_2 (\frac{1}{RC_1} - \frac{1}{RC_2}),
+\frac{\partial L}{ \partial \alpha_{2 \gets 1}} =  - L_1 (\frac{1}{RC_1} - \frac{1}{RC_2})
+}
+\]
+
+Depending on the sign of required capitals $RC_1$ a,d $RC_2$, two values correspond to a minimum of the loss function : (0 and 1) or (1 and 0)
+
+this leads to total transfers for capital from the entity with the smaller RC to the one with the higher RC.
+
+There is no equilibrium in SR and can lead to overloading the entity with the bigger RC.
+
+What happen if delta RC is taken into account ?
+Whatr in 3D ? ND ?
+
+For an arbitrary number of entitie:
+
+problem can be expressed as linear programming
+solution is on the edges of the domain
+for proportional reinsurance, hypercube and alpha between 0 and 1
+$http://www.ens-lyon.fr/denif/data/concept_analyse_algo_x/2007/cours/cours4.pdf$
+only valid if RC not shocked and for proportional reinsurance
+consequence : values of factors are either 0 or 1.
+Should use a weighting in the sum of SR and see what is the result.
+
+Can we achieve better global solvency with a smarter loss function ? 
+
+Other aspect : what happen if RC is shocked ?
+
+
+
+Case of harmonic mean of solvency ratios:
+
+\begin{equation}
+    L = \frac{w_1}{SR_1} + \frac{w_2}{SR_2}
+\end{equation}
+
+$w_1$ and $w_2$ are solvency ratio weights, the higher the value, the more importance gets the associated solvency ratio in in the optimization.
+
+Such cost function will favor balanced solvency ratio, preventing full transfer of money observed with sum loss function.
+
+PUT A GRAPH OF HARMONIC LOSS FUNCTION CHOWING VALUES
+
+
+
+
+
+\section{Optimal retrocession structure}
+
+on donne un nombre de filiales, elles ont chacunes un niveau de capital et un capital requirement à l'instant t
+on applique le choc (loss sur chacune de ces filiales) 
+
+on cherche par optimisation à déterminer la resereu et les taux de cession optimaux pour minimiser la hausse (voir faire baisser) le capital requirement
+
+avantage d'un comportement linéaire du capital requirement : résolution probable avec une inversion de matrice. A etudier
+critère d'ptimisation :
+- capital requirement
+- solvency ratios
+
+Contrainte sur le graphe : graphe orienté (retro unidirectionelle) acyclique directed acyclic graph
+% https://en.wikipedia.org/wiki/Directed_acyclic_graph
+
+directed graph ssi lower triangular : je pense que oui
+
+
+
+
+Des astuces et approximation de roll forward seront proposées afin de faciliter le calcul de l’impact de ces chocs sur les capital requirements. Leur précision sera étudiée afin d’en évaluer la pertinence.
+
+
