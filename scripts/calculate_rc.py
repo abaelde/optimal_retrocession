@@ -69,29 +69,108 @@ def calculate_bma_bscr(balance_sheet, pml_cat):
     bscr = np.sqrt(C_fi**2 + C_eq**2 + C_cred**2 + C_rsrv**2 + C_prem**2 + C_cat**2) + C_op + C_adj
     return bscr
 
+def propagate_shock(initial_balance_sheet, initial_loss_allocation):
+    # Fixed retrocession matrix R
+    # R[i, j] = proportion of loss from entity i transferred to entity j
+    # Here, ARC-US (index 0) cedes 50% to ARC-BM (index 1)
+    # ARC-BM (index 1) retains 100% of its own loss and assumed loss
+    R = np.array([
+        [0.5, 0.5],  # ARC-US retains 50%, cedes 50% to ARC-BM
+        [0.0, 1.0]   # ARC-BM retains 100%
+    ])
+
+    # Convert initial_loss_allocation Series to a numpy array for matrix multiplication
+    L0 = initial_loss_allocation.values
+
+    # Calculate net losses for each entity after retrocession (L^U)
+    # L^U_i = sum_j (R_ji * L0_j) -- This is not correct for the interpretation of R
+    # L_net_US = L0_US * R[0,0] (retained) + L0_BM * R[1,0] (assumed from BM, which is 0)
+    # L_net_BM = L0_US * R[0,1] (assumed from US) + L0_BM * R[1,1] (retained)
+
+    # Let's define L_net as the net loss borne by each entity
+    net_loss_us = L0[0] * R[0,0]  # ARC-US retains 50% of its own loss
+    net_loss_bm = L0[1] * R[1,1] + L0[0] * R[0,1] # ARC-BM retains its own loss + assumes 50% from ARC-US
+
+    L_U = pd.Series([net_loss_us, net_loss_bm], index=initial_loss_allocation.index)
+
+    # Calculate ceded and assumed amounts for balance sheet updates
+    ceded_loss_us_to_bm = L0[0] * R[0,1]
+    retained_loss_us = L0[0] * R[0,0]
+
+    # Create copies of balance sheets to modify
+    updated_balance_sheet = initial_balance_sheet.copy()
+
+    # Update Capital (C^U)
+    updated_balance_sheet.loc['Capital (C)', 'ARC-US'] -= L_U['ARC-US']
+    updated_balance_sheet.loc['Capital (C)', 'ARC-BM'] -= L_U['ARC-BM']
+
+    # Update Reserves and Recoverables
+    # For ARC-US: Reserves increase by retained loss, Recoverables increase by ceded loss
+    updated_balance_sheet.loc['Reserves (Res)', 'ARC-US'] += retained_loss_us
+    updated_balance_sheet.loc['Recoverables (Recov)', 'ARC-US'] += ceded_loss_us_to_bm
+
+    # For ARC-BM: Reserves increase by its own gross loss + assumed loss
+    updated_balance_sheet.loc['Reserves (Res)', 'ARC-BM'] += (L0[1] + ceded_loss_us_to_bm)
+    # Recoverables for ARC-BM remain unchanged from this retrocession
+
+    # Recalculate RC^U using updated balance sheets and net catastrophe losses
+    rc_u_us = calculate_naic_rbc(updated_balance_sheet['ARC-US'], L_U['ARC-US'])
+    rc_u_bm = calculate_bma_bscr(updated_balance_sheet['ARC-BM'], L_U['ARC-BM'])
+
+    return {
+        'updated_balance_sheet': updated_balance_sheet,
+        'net_losses': L_U,
+        'rc_u_us': rc_u_us,
+        'rc_u_bm': rc_u_bm
+    }
+
 if __name__ == '__main__':
     company_data = get_company_data()
-    balance_sheet = company_data['balance_sheet']
+    balance_sheet_pre_shock = company_data['balance_sheet']
+    initial_loss_allocation = company_data['initial_loss_allocation']
 
-    # Assuming a placeholder PML for Catastrophe risk for pre-shock calculation
-    # This will be replaced by actual scenario-driven PML later
-    pml_cat_us = 0 # No catastrophe in pre-shock
-    pml_cat_bm = 0 # No catastrophe in pre-shock
+    print("--- Pre-Shock Data ---")
+    print("Balance Sheet (in M$):")
+    print(balance_sheet_pre_shock)
+    print("\nInitial Loss Allocation (L^0, in M$):")
+    print(initial_loss_allocation)
 
-    # Calculate RC for ARC-US (NAIC RBC)
-    rc_us = calculate_naic_rbc(balance_sheet['ARC-US'], pml_cat_us)
-    print(f"Required Capital for ARC-US (NAIC RBC): {rc_us:.2f} M$")
+    # Calculate RC for ARC-US (NAIC RBC) and ARC-BM (BMA BSCR) pre-shock
+    # Assuming 0 PML for pre-shock RC calculation
+    rc_us_pre_shock = calculate_naic_rbc(balance_sheet_pre_shock['ARC-US'], pml_cat=0)
+    rc_bm_pre_shock = calculate_bma_bscr(balance_sheet_pre_shock['ARC-BM'], pml_cat=0)
 
-    # Calculate RC for ARC-BM (BMA BSCR)
-    rc_bm = calculate_bma_bscr(balance_sheet['ARC-BM'], pml_cat_bm)
-    print(f"Required Capital for ARC-BM (BMA BSCR): {rc_bm:.2f} M$")
+    print(f"\nRequired Capital for ARC-US (NAIC RBC) Pre-Shock: {rc_us_pre_shock:.2f} M$")
+    print(f"Required Capital for ARC-BM (BMA BSCR) Pre-Shock: {rc_bm_pre_shock:.2f} M$")
 
     # Calculate initial solvency ratios
-    capital_us = balance_sheet['ARC-US']['Capital (C)']
-    capital_bm = balance_sheet['ARC-BM']['Capital (C)']
+    capital_us_pre_shock = balance_sheet_pre_shock.loc['Capital (C)', 'ARC-US']
+    capital_bm_pre_shock = balance_sheet_pre_shock.loc['Capital (C)', 'ARC-BM']
 
-    sr_us = capital_us / rc_us
-    sr_bm = capital_bm / rc_bm
+    sr_us_pre_shock = capital_us_pre_shock / rc_us_pre_shock
+    sr_bm_pre_shock = capital_bm_pre_shock / rc_bm_pre_shock
 
-    print(f"Initial Solvency Ratio for ARC-US: {sr_us:.2f}")
-    print(f"Initial Solvency Ratio for ARC-BM: {sr_bm:.2f}")
+    print(f"Initial Solvency Ratio for ARC-US: {sr_us_pre_shock:.2f}")
+    print(f"Initial Solvency Ratio for ARC-BM: {sr_bm_pre_shock:.2f}")
+
+    print("\n--- Post-Shock Data (with fixed retrocession) ---")
+    shock_results = propagate_shock(balance_sheet_pre_shock, initial_loss_allocation)
+
+    print("\nUpdated Balance Sheet (in M$):")
+    print(shock_results['updated_balance_sheet'])
+
+    print("\nNet Losses (L^U, in M$):")
+    print(shock_results['net_losses'])
+
+    print(f"\nRequired Capital for ARC-US (NAIC RBC) Post-Shock: {shock_results['rc_u_us']:.2f} M$")
+    print(f"Required Capital for ARC-BM (BMA BSCR) Post-Shock: {shock_results['rc_u_bm']:.2f} M$")
+
+    # Calculate post-shock solvency ratios
+    capital_us_post_shock = shock_results['updated_balance_sheet'].loc['Capital (C)', 'ARC-US']
+    capital_bm_post_shock = shock_results['updated_balance_sheet'].loc['Capital (C)', 'ARC-BM']
+
+    sr_us_post_shock = capital_us_post_shock / shock_results['rc_u_us']
+    sr_bm_post_shock = capital_bm_post_shock / shock_results['rc_u_bm']
+
+    print(f"Post-Shock Solvency Ratio for ARC-US: {sr_us_post_shock:.2f}")
+    print(f"Post-Shock Solvency Ratio for ARC-BM: {sr_bm_post_shock:.2f}")
