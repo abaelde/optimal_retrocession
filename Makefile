@@ -15,4 +15,6 @@ concat:
 latex:
 	@echo "Compiling LaTeX document..."
 	@cd memoire && pdflatex main.tex
+	@cd memoire && biber main
+	@cd memoire && pdflatex main.tex
 	@echo "Done."

@@ -110,5 +110,13 @@ results/
 .direnv/
 # macOS system files
 .DS_Store
-# Generated LaTeX PDF
-memoire/main.pdf
+# Fichiers LaTeX générés
+memoire/main.*
+
+*.aux
+*.bbl
+*.bcf
+*.out
+*.toc
+*.run.xml
+
